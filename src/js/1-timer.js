@@ -13,8 +13,7 @@ const options = {
     userSelectedDate = new Date(selectedDates);
     if (userSelectedDate.getTime() - date.getTime() < 0) {
       iziToast.show({
-    title: 'Error',
-    message: 'Illegal operation',
+    message: 'Будь ласка, оберіть дату у майбутньому.',
     color: "red",
     position: "topRight",
         titleColor: 'white',
@@ -29,7 +28,7 @@ const options = {
   },
 };
 
-
+let timerId;
 const selector = document.querySelector('#datetime-picker');
 flatpickr(selector, options);
 let userSelectedDate;
@@ -38,15 +37,16 @@ buttonStart.disabled = true;
 const date = new Date();
 
 const input = document.querySelector('.date-picker');
-let dayUser = document.querySelector('[data-days]');
-let hoursUser = document.querySelector('[data-hours]');
-let minutesUser = document.querySelector('[data-minutes]');
-let secondsUser = document.querySelector('[data-seconds]');
+let userSelectedDay = document.querySelector('[data-days]');
+let userSelectedHour = document.querySelector('[data-hours]');
+let userSelectedMinutes = document.querySelector('[data-minutes]');
+let userSelectedSeconds = document.querySelector('[data-seconds]');
 
 buttonStart.addEventListener('click', () => {
   buttonStart.disabled = true;
   input.disabled = true;
-
+  selector.style.cursor = `not-allowed`;
+  buttonStart.style.cursor = `not-allowed`;
   timerId = setInterval(() => {
     const now = new Date();
     const displayTime = userSelectedDate.getTime() - now.getTime();
@@ -55,8 +55,11 @@ buttonStart.addEventListener('click', () => {
       clearInterval(timerId);
       updateDisplay({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-      buttonStart.disabled = false;
+      buttonStart.disabled = true;
       input.disabled = false;
+
+      selector.style.cursor = `pointer`;
+      buttonStart.style.cursor = `pointer`;
 
       return;
     }
@@ -66,10 +69,10 @@ buttonStart.addEventListener('click', () => {
 });
 
 function updateDisplay({ days, hours, minutes, seconds }) {
-  dayUser.textContent = addLeadingZero(String(days));
-  hoursUser.textContent = addLeadingZero(String(hours));
-  minutesUser.textContent = addLeadingZero(String(minutes));
-  secondsUser.textContent = addLeadingZero(String(seconds));
+  userSelectedDay.textContent = addLeadingZero(String(days));
+  userSelectedHour.textContent = addLeadingZero(String(hours));
+  userSelectedMinutes.textContent = addLeadingZero(String(minutes));
+  userSelectedSeconds.textContent = addLeadingZero(String(seconds));
 }
 
 function convertMs(ms) {
